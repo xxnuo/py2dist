@@ -181,6 +181,7 @@ class Compiler:
         for folder in [
             ".py2dist/build",
             ".py2dist/build_c",
+            ".py2dist/build_tmp",
             self.options.output_dir,
         ]:
             folder_path = os.path.join(self._work_dir, folder)
@@ -202,8 +203,10 @@ class Compiler:
     def _run_cython_build(self, script_path: str):
         build_dir = os.path.join(self._work_dir, ".py2dist/build")
         build_c_dir = os.path.join(self._work_dir, ".py2dist/build_c")
+        build_tmp_dir = os.path.join(self._work_dir, ".py2dist/build_tmp")
         make_dirs(build_dir)
         make_dirs(build_c_dir)
+        make_dirs(build_tmp_dir)
 
         env = os.environ.copy()
         ccache_path = self.options.ccache
@@ -222,7 +225,7 @@ class Compiler:
             if not self.options.python_version
             else f"python{self.options.python_version}"
         )
-        cmd = f"{py_cmd} {script_path} {self._work_dir} build_ext --build-lib={build_dir} --build-temp={build_c_dir} {log} --parallel=8"
+        cmd = f"{py_cmd} {script_path} {self._work_dir} build_ext --build-lib={build_dir} --build-temp=.py2dist/build_tmp {log} --parallel=8"
 
         if not IS_WINDOWS and not self.options.quiet:
             print(f"> {cmd}")

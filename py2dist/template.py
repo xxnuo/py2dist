@@ -32,7 +32,7 @@ setup(
     ext_modules=cythonize(
         extensions,
         nthreads=%s,
-        build_dir=os.path.join(work_dir, ".py2dist/build_c"),
+        build_dir=".py2dist/build_c",
         quiet=%s,
         compiler_directives=compiler_directives
     )
