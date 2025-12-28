@@ -25,18 +25,7 @@ class CompileOptions:
 
 
 def find_ccache() -> Optional[str]:
-    ccache_path = shutil.which("ccache")
-    if ccache_path:
-        return ccache_path
-    common_paths = [
-        "/usr/bin/ccache",
-        "/usr/local/bin/ccache",
-        "/opt/homebrew/bin/ccache",
-    ]
-    for path in common_paths:
-        if os.path.isfile(path) and os.access(path, os.X_OK):
-            return path
-    return None
+    return shutil.which("ccache")
 
 
 IS_WINDOWS = platform.system() == "Windows"
