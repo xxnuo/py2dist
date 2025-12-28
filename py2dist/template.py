@@ -1,5 +1,6 @@
 BUILD_SCRIPT_TEMPLATE = r'''import os
 import platform
+import sysconfig
 import sys
 from setuptools import Extension, setup
 from Cython.Build import cythonize
@@ -18,9 +19,17 @@ os.chdir(source_root)
 
 extra_compile_args = None
 extra_link_args = None
-if not include_debug and platform.system() != "Windows":
-    extra_compile_args = ["-g0"]
-    extra_link_args = ["-Wl,-S"]
+if not include_debug:
+    cc = (sysconfig.get_config_var("CC") or "").lower()
+    if platform.system() == "Windows":
+        if "gcc" in cc or "clang" in cc or "g++" in cc:
+            extra_compile_args = ["-g0"]
+            extra_link_args = ["-Wl,-S"]
+        else:
+            extra_link_args = ["/DEBUG:NONE"]
+    else:
+        extra_compile_args = ["-g0"]
+        extra_link_args = ["-Wl,-S"]
 
 for rel_filename in rel_filenames:
     mod_name = rel_filename[:-3].replace(os.path.sep, '.')
