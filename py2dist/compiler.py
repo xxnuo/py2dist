@@ -204,7 +204,7 @@ class Compiler:
             print(f"> {cmd}")
 
         p = subprocess.Popen(
-            cmd, shell=True, stderr=subprocess.STDOUT, cwd=self._temp_dir, env=env
+            cmd, shell=True, stderr=subprocess.STDOUT, cwd=self._work_dir, env=env
         )
         code = p.wait()
         if code:
