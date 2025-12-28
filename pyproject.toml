@@ -5,19 +5,43 @@ build-backend = "hatchling.build"
 [project]
 name = "py2dist"
 version = "0.1.1"
-description = "Compile Python code to binary using Cython"
+description = "Compile Python code to binary for distribution"
 readme = "README.md"
 requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [
+    { name = "xxnuo" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Security",
+]
 dependencies = [
     "Cython>=3.0.0",
     "setuptools>=68.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/xxnuo/py2dist"
+"Source Code" = "https://github.com/xxnuo/py2dist"
+"Bug Tracker" = "https://github.com/xxnuo/py2dist/issues"
 
 [project.scripts]
 py2dist = "py2dist.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["py2dist"]
+
 [tool.hatch.build.targets.sdist]
 include = [
     "py2dist",
