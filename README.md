@@ -66,4 +66,35 @@ compile_dir(
 或者
 `ModuleNotFoundError: No module named ...`
 
-建议在目标部署环境中进行编译，或者使用 Docker 确保环境一致。
+
+## 开发与发布
+
+### 本地开发
+
+安装依赖：
+```bash
+make install
+```
+
+运行测试：
+```bash
+make test
+```
+
+构建包：
+```bash
+make build
+```
+
+### 发布新版本
+
+本项目使用 GitHub Actions 自动发布到 PyPI。
+
+1. 确保已配置 PyPI 的 Trusted Publishing 或 Secrets。
+2. 使用 `make release` 命令更新版本号并推送 tag：
+
+```bash
+make release v=0.1.1
+```
+
+这将自动更新 `pyproject.toml` 和 `__init__.py` 中的版本号，提交更改，打上 `v0.1.1` 的 tag，并推送到 GitHub。GitHub Actions 检测到新 tag 后会自动构建并发布到 PyPI。
