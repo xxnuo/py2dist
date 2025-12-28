@@ -41,6 +41,11 @@ def find_ccache() -> Optional[str]:
 
 IS_WINDOWS = platform.system() == "Windows"
 
+def _dfile_for_path(path: str, root: Optional[str]) -> str:
+    if root:
+        return os.path.relpath(path, root)
+    return os.path.basename(path)
+
 
 def get_files_in_dir(
     dir_path: str,
@@ -187,6 +192,13 @@ class Compiler:
         if os.path.isdir(folder_path):
             shutil.rmtree(folder_path)
 
+    def _dfile_root(self) -> Optional[str]:
+        if self.options.source_dir:
+            return os.path.dirname(os.path.abspath(self.options.source_dir))
+        if self.options.source_file:
+            return os.path.dirname(os.path.abspath(self.options.source_file))
+        return None
+
     def _run_cython_build(self, script_path: str):
         build_dir = os.path.join(self._work_dir, ".py2dist/build")
         build_c_dir = os.path.join(self._work_dir, ".py2dist/build_c")
@@ -247,7 +259,7 @@ class Compiler:
                 shutil.copyfile(src_path, dest_path)
 
     def _compile_init_to_pyc(self, src_path: str, dest_path: str):
-        py_compile.compile(src_path, doraise=True)
+        py_compile.compile(src_path, dfile=_dfile_for_path(src_path, self._dfile_root()), doraise=True)
         cache_dir = os.path.join(os.path.dirname(src_path), '__pycache__')
         base_name = os.path.splitext(os.path.basename(src_path))[0]
         if os.path.isdir(cache_dir):
@@ -342,7 +354,7 @@ def compile_to_bytecode(target: str, output_dir: str, quiet: bool = False, in_pl
             if not target.endswith('.py'):
                 raise ValueError("Bytecode target must be a .py file or directory")
             base_name = os.path.splitext(os.path.basename(target))[0]
-            py_compile.compile(target, doraise=True)
+            py_compile.compile(target, dfile=_dfile_for_path(target, os.path.dirname(target)), doraise=True)
             cache_dir = os.path.join(os.path.dirname(target), '__pycache__')
             if os.path.isdir(cache_dir):
                 for f in os.listdir(cache_dir):
@@ -358,7 +370,13 @@ def compile_to_bytecode(target: str, output_dir: str, quiet: bool = False, in_pl
                 except OSError:
                     pass
         elif os.path.isdir(target):
-            success = compileall.compile_dir(target, force=True, quiet=2 if quiet else 0)
+            success = compileall.compile_dir(
+                target,
+                force=True,
+                quiet=2 if quiet else 0,
+                stripdir=target,
+                prependdir=os.path.basename(target),
+            )
             if not success:
                 raise RuntimeError("Bytecode compilation failed")
             for root, dirs, files in os.walk(target):
@@ -387,7 +405,7 @@ def compile_to_bytecode(target: str, output_dir: str, quiet: bool = False, in_pl
                 raise ValueError("Bytecode target must be a .py file or directory")
             base_name = os.path.splitext(os.path.basename(target))[0]
             make_dirs(output_dir)
-            py_compile.compile(target, doraise=True)
+            py_compile.compile(target, dfile=_dfile_for_path(target, os.path.dirname(target)), doraise=True)
             cache_dir = os.path.join(os.path.dirname(target), '__pycache__')
             if os.path.isdir(cache_dir):
                 for f in os.listdir(cache_dir):
@@ -400,7 +418,13 @@ def compile_to_bytecode(target: str, output_dir: str, quiet: bool = False, in_pl
                         break
 
         elif os.path.isdir(target):
-            success = compileall.compile_dir(target, force=True, quiet=2 if quiet else 0)
+            success = compileall.compile_dir(
+                target,
+                force=True,
+                quiet=2 if quiet else 0,
+                stripdir=target,
+                prependdir=os.path.basename(target),
+            )
             if not success:
                 raise RuntimeError("Bytecode compilation failed")
             for root, dirs, files in os.walk(target):
