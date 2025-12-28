@@ -153,7 +153,9 @@ class Compiler:
             self.options.nthread,
             self.options.quiet,
         )
-        script_path = os.path.join(self._work_dir, ".pyprotector/build.py")
+        script_dir = os.path.join(self._work_dir, ".pyprotector")
+        make_dirs(script_dir)
+        script_path = os.path.join(script_dir, "build.py")
         with open(script_path, "w") as f:
             f.write(content)
         return script_path
