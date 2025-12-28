@@ -61,6 +61,7 @@ def main():
     parser.add_argument("-x", "--nthread", type=int, default=1, help="Number of parallel threads")
     parser.add_argument("-q", "--quiet", action="store_true", help="Quiet mode")
     parser.add_argument("-r", "--release", action="store_true", help="Release mode (clean tmp files)")
+    parser.add_argument("--debug", action="store_true", help="Include debug symbols in compiled extensions")
     parser.add_argument("-c", "--ccache", dest="ccache", nargs="?", const="auto", default=None, help="Use ccache (auto-detect or specify path)")
     parser.add_argument("-b", "--bytecode", dest="bytecode_target", help="Compile to .pyc using compileall (file or directory)")
 
@@ -115,6 +116,7 @@ def main():
             nthread=args.nthread,
             quiet=args.quiet,
             release=args.release,
+            debug=args.debug,
             output_dir=args.output_dir,
             ccache=ccache_path
         )

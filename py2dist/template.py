@@ -1,4 +1,5 @@
 BUILD_SCRIPT_TEMPLATE = r'''import os
+import platform
 import sys
 from setuptools import Extension, setup
 from Cython.Build import cythonize
@@ -10,13 +11,20 @@ sys.argv = [sys.argv[0]] + sys.argv[2:]
 extensions = []
 rel_filenames = %s
 source_root = %s
+include_debug = %s
 
 old_cwd = os.getcwd()
 os.chdir(source_root)
 
+extra_compile_args = None
+extra_link_args = None
+if not include_debug and platform.system() != "Windows":
+    extra_compile_args = ["-g0"]
+    extra_link_args = ["-Wl,-S"]
+
 for rel_filename in rel_filenames:
     mod_name = rel_filename[:-3].replace(os.path.sep, '.')
-    extension = Extension(mod_name, [rel_filename])
+    extension = Extension(mod_name, [rel_filename], extra_compile_args=extra_compile_args, extra_link_args=extra_link_args)
     extension.cython_c_in_temp = True
     extensions.append(extension)
 

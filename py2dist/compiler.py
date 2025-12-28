@@ -20,6 +20,7 @@ class CompileOptions:
     nthread: int = 1
     quiet: bool = False
     release: bool = False
+    debug: bool = False
     output_dir: str = "dist"
     ccache: Optional[str] = None
 
@@ -155,6 +156,7 @@ class Compiler:
         content = BUILD_SCRIPT_TEMPLATE % (
             files_repr,
             source_root_repr,
+            self.options.debug,
             self.options.python_version,
             self.options.nthread,
             self.options.quiet,
@@ -302,6 +304,7 @@ def compile_file(
     nthread: int = 1,
     quiet: bool = False,
     release: bool = True,
+    debug: bool = False,
 ) -> str:
     opts = CompileOptions(
         source_file=source,
@@ -310,6 +313,7 @@ def compile_file(
         nthread=nthread,
         quiet=quiet,
         release=release,
+        debug=debug,
     )
     return Compiler(opts).compile()
 
@@ -322,6 +326,7 @@ def compile_dir(
     nthread: int = 1,
     quiet: bool = False,
     release: bool = True,
+    debug: bool = False,
 ) -> str:
     source = source.rstrip("/")
     opts = CompileOptions(
@@ -332,6 +337,7 @@ def compile_dir(
         nthread=nthread,
         quiet=quiet,
         release=release,
+        debug=debug,
     )
     return Compiler(opts).compile()
 
