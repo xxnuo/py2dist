@@ -6,18 +6,29 @@ py2dist is a tool that uses Cython to compile Python source code into binary ext
 
 ## Features
 
-- Compile single `.py` files or entire directories into binary files.
+- Support Linux, Mac, Windows platforms.
+- Support compiling single `.py` files or entire directories into binary files.
 - Preserve directory structure, automatically copy other files to the output directory.
 - Support excluding specific files or directories.
 - Automatically detect and use `ccache` to accelerate compilation.
 - Get a small performance boost from Cython compilation.
-- Provide both CLI and Python API.
+- Provide both CLI and Python API two usage methods.
 
 ## Installation
 
 ```bash
-pip install py2dist
+pip3 install py2dist
 ```
+
+It is recommended to use [`uv`](https://docs.astral.sh/uv/) to install and manage virtual environments, and pin the Python version to avoid inconsistencies between the compilation result and the actual runtime environment. Taking Python 3.12 as an example:
+
+```bash
+uv python pin 3.12
+uv venv
+uv add --dev py2dist
+```
+
+> It is not recommended to use `uv tool install py2dist` for installation, as this will invoke the system Python version for compilation, leading to inconsistency between the compilation result and the actual runtime virtual environment.
 
 ## Important Note: Python Version Consistency
 
@@ -36,14 +47,24 @@ The default output directory is `dist` / `{directory name specified by -d}`, but
 
 Compile a single file:
 ```bash
-py2dist -f myscript.py
+python3 -m py2dist -f myscript.py
+```
+
+Or use the `uv` command:
+```bash
+uv run py2dist -f myscript.py
 ```
 
 The output file location will be `dist/myscript.so`.
 
 Compile an entire directory:
 ```bash
-py2dist -d myproject
+python3 -m py2dist -d myproject
+```
+
+Or use the `uv` command:
+```bash
+uv run py2dist -d myproject
 ```
 
 The output location will be `dist/myproject`, and non-`.py` files will be automatically copied to the output directory.
