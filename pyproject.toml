@@ -4,32 +4,39 @@ build-backend = "hatchling.build"
 
 [project]
 name = "py2dist"
-version = "0.1.1"
+version = "0.1.2"
 description = "Compile Python code to binary for distribution"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 license = "Apache-2.0"
-authors = [
-    { name = "xxnuo" },
-]
+authors = [{ name = "xxnuo" }]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: Implementation :: Stackless",
+    "Programming Language :: C",
+    "Programming Language :: C++",
+    "Programming Language :: Cython",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Build Tools",
     "Topic :: Software Development :: Compilers",
     "Topic :: Security",
+    "Typing :: Typed",
 ]
-dependencies = [
-    "Cython>=3.0.0",
-    "setuptools>=68.0.0",
-]
+dependencies = ["Cython", "setuptools"]
 
 [project.urls]
 Homepage = "https://github.com/xxnuo/py2dist"
@@ -43,13 +50,7 @@ py2dist = "py2dist.cli:main"
 packages = ["py2dist"]
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "py2dist",
-    "README.md",
-    "README_zh.md",
-    "LICENSE",
-    "pyproject.toml",
-]
+include = ["py2dist", "README.md", "README_zh.md", "LICENSE", "pyproject.toml"]
 exclude = [
     "tests",
     "scripts",
