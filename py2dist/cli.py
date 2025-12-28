@@ -30,6 +30,23 @@ def parse_exclude_files(value: str, root_dir: str) -> list:
     return exclude
 
 
+def get_bytecode_excludes(bytecode_target: str, source_dir: str) -> list:
+    source_dir_abs = os.path.abspath(source_dir.rstrip('/\\'))
+    bytecode_abs = os.path.abspath(bytecode_target)
+    if not (bytecode_abs == source_dir_abs or bytecode_abs.startswith(source_dir_abs + os.path.sep)):
+        return []
+    if os.path.isfile(bytecode_abs):
+        if not bytecode_abs.endswith(".py"):
+            return []
+        return [os.path.relpath(bytecode_abs, source_dir_abs)]
+    if os.path.isdir(bytecode_abs):
+        excludes = []
+        for f in get_files_in_dir(bytecode_abs, True, 0, ".py"):
+            excludes.append(os.path.relpath(f, source_dir_abs))
+        return excludes
+    return []
+
+
 def main():
     parser = argparse.ArgumentParser(
         prog="py2dist",
@@ -72,6 +89,9 @@ def main():
     exclude_files = []
     if args.exclude and args.source_dir:
         exclude_files = parse_exclude_files(args.exclude, args.source_dir.rstrip('/'))
+    if bytecode_target and args.source_dir:
+        exclude_files.extend(get_bytecode_excludes(bytecode_target, args.source_dir))
+        exclude_files = list(set(exclude_files))
 
     ccache_path = None
     if args.ccache:
